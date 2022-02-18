@@ -4,6 +4,14 @@ from xrpl.wallet import generate_faucet_wallet
 from xrpl.core import addresscodec
 from xrpl.models.requests.account_info import AccountInfo
 
+JSON_RPC_URL_ALTNET = "https://s.altnet.rippletest.net:51234/"
+JSON_RPC_URL_PROD = "https://s2.ripple.com:51234/"
+
+def create_altnet_faucet():
+    """Create faucet using altnet client"""
+    client = util.get_client(JSON_RPC_URL_ALTNET)
+    return create_faucet(client)
+
 def create_faucet(client):
     """Create a wallet using the testnet faucet"""
     test_wallet = generate_faucet_wallet(client, debug=True)
