@@ -11,5 +11,17 @@ class AQRLTestSuite(unittest.TestCase):
     def test_faucet(self):
         self.assertTrue(aqrl_xrpl.create_altnet_faucet())
 
+    def test_account(self):
+        wallet = aqrl_xrpl.create_altnet_faucet()
+        self.assertTrue(aqrl_xrpl.create_account(wallet))
+
+    def test_xaddress(self):
+        wallet = aqrl_xrpl.create_altnet_faucet()
+        account = aqrl_xrpl.create_account(wallet)
+        self.assertTrue(aqrl_xrpl.create_xaddress(account))
+
+    def lookup_account_info(self):
+        pass
+
 if __name__ == '__main__':
     unittest.main()
