@@ -20,8 +20,10 @@ class AQRLTestSuite(unittest.TestCase):
         account = aqrl_xrpl.create_account(wallet)
         self.assertTrue(aqrl_xrpl.create_xaddress(account))
 
-    def lookup_account_info(self):
-        pass
+    def test_lookup_account_info(self):
+        wallet = aqrl_xrpl.create_altnet_faucet()
+        account = aqrl_xrpl.create_account(wallet)
+        self.assertTrue(aqrl_xrpl.lookup_account_info(account))
 
 if __name__ == '__main__':
     unittest.main()
