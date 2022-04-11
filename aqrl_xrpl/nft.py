@@ -62,6 +62,20 @@ class XRPLNFT:
         print(f"Mint Outcome: {self.mint_response.status}\nResult Data:")
         print(json.dumps(self.mint_response.result, indent=4, sort_keys=True))
 
-    def parse_mint_response(self) -> Dict:
-        self.mint_data = self.mint_response.result
-        return self.mint_data
+    def get_token_id(self) -> str:
+        if self.minted == False:
+            return
+        tx_data = self.mint_response.result
+        self.tokenID = ""
+        if "CreatedNode" in tx_data["meta"]["AffectedNodes"][0]:
+            self.tokenID = tx_data["meta"]["AffectedNodes"][0]["CreatedNode"]["NewFields"]["NonFungibleTokens"][0]["NonFungibleToken"]["TokenID"]
+        elif "ModifiedNode" in tx_data["meta"]["AffectedNodes"][0]:
+            new_tokens = set()
+            old_tokens = set()
+            for entry in tx_data["meta"]["AffectedNodes"][0]["ModifiedNode"]["FinalFields"]["NonFungibleTokens"]:
+                new_tokens.add(entry["NonFungibleToken"]["TokenID"])
+            for entry in tx_data["meta"]["AffectedNodes"][0]["ModifiedNode"]["PreviousFields"]["NonFungibleTokens"]:
+                old_tokens.add(entry["NonFungibleToken"]["TokenID"])
+            new_tokenID = new_tokens - old_tokens
+            self.tokenID = new_tokenID.pop()
+        return self.tokenID

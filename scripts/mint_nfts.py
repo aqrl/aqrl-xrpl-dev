@@ -14,7 +14,7 @@ from typing import List, Dict
 _ACCOUNT = "rG2ueQWPDfRy6KaR2YLpj2sjaDBbtrCrDW"
 _SECRET = "sspSBf4LjEwpXyRffSdgQRuChwezh"
 _URI = "https://aqrl.mypinata.cloud/ipfs/QmQMdhAX7zz7zP7eC9jzXy7dBFppXQFgYQFhaa7SfjJXwn"
-_NUM_MINT = 10
+_NUM_MINT = 1
 _TRANSFER_FEE = 1000 # 1%
 
 async def get_nfts_in_account(account: XRPLAccount, debug: bool = False) -> None:
@@ -57,6 +57,7 @@ async def mint_nft_collection(
         duration = time() - start
         time_sum += duration
         if debug:
+            print(f"TokenID: {nft.get_token_id()}")
             nft.show_mint_response()
             print(f"Time taken: {duration}s")
     print(f"Total time taken to mint {num} NFTs: {time_sum}s "

@@ -3,9 +3,11 @@ import json
 from xrpl.wallet import generate_faucet_wallet
 from xrpl.core import addresscodec
 from xrpl.models.requests.account_info import AccountInfo
+from xrpl.models.response import Response
 from xrpl.models.response import ResponseStatus
 from xrpl.models.requests import AccountNFTs
 from xrpl.asyncio.clients import AsyncWebsocketClient
+from xrpl.asyncio.transaction import get_transaction_from_hash
 from xrpl.wallet import Wallet
 
 def create_altnet_faucet():
@@ -75,3 +77,11 @@ class XRPLAccount:
 
     def get_wallet(self) -> Wallet:
         return self.wallet
+
+    async def get_tx_info(self, tx_hash: str, debug: bool = False) -> Response:
+        async with AsyncWebsocketClient(self.network_url) as client:
+            response = await get_transaction_from_hash(tx_hash, client)
+            if debug:
+                print(json.dumps(response.result, indent=4, sort_keys=True))
+                print(response.status)
+            return response
