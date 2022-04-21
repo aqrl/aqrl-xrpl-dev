@@ -91,3 +91,7 @@ ENV/
 
 # vim
 *.swp
+*.swo
+
+# debugging
+scripts/debug*

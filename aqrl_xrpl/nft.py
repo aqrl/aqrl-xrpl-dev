@@ -64,8 +64,10 @@ class XRPLNFT:
 
     def get_token_id(self) -> str:
         if self.minted == False:
-            return
+            return ""
         tx_data = self.mint_response.result
+        if "meta" not in tx_data:
+            return ""
         self.tokenID = ""
         if "CreatedNode" in tx_data["meta"]["AffectedNodes"][0]:
             self.tokenID = tx_data["meta"]["AffectedNodes"][0]["CreatedNode"]["NewFields"]["NonFungibleTokens"][0]["NonFungibleToken"]["TokenID"]
