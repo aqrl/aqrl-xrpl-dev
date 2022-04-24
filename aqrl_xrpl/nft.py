@@ -69,15 +69,25 @@ class XRPLNFT:
         if "meta" not in tx_data:
             return ""
         self.tokenID = ""
-        if "CreatedNode" in tx_data["meta"]["AffectedNodes"][0]:
-            self.tokenID = tx_data["meta"]["AffectedNodes"][0]["CreatedNode"]["NewFields"]["NonFungibleTokens"][0]["NonFungibleToken"]["TokenID"]
-        elif "ModifiedNode" in tx_data["meta"]["AffectedNodes"][0]:
+        nft_node = None
+        for node in tx_data["meta"]["AffectedNodes"]:
+            if "CreatedNode" in node:
+                if "NFTokens" in node["CreatedNode"]["NewFields"]:
+                    nft_node = node
+                    break
+            elif "ModifiedNode" in node:
+                if "NFTokens" in node["ModifiedNode"]["FinalFields"]:
+                    nft_node = node
+                    break
+        if "CreatedNode" in node:
+            self.tokenID = node["CreatedNode"]["NewFields"]["NFTokens"][0]["NFToken"]["NFTokenID"]
+        elif "ModifiedNode" in node:
             new_tokens = set()
             old_tokens = set()
-            for entry in tx_data["meta"]["AffectedNodes"][0]["ModifiedNode"]["FinalFields"]["NonFungibleTokens"]:
-                new_tokens.add(entry["NonFungibleToken"]["TokenID"])
-            for entry in tx_data["meta"]["AffectedNodes"][0]["ModifiedNode"]["PreviousFields"]["NonFungibleTokens"]:
-                old_tokens.add(entry["NonFungibleToken"]["TokenID"])
+            for entry in node["ModifiedNode"]["FinalFields"]["NFTokens"]:
+                new_tokens.add(entry["NFToken"]["NFTokenID"])
+            for entry in node["ModifiedNode"]["PreviousFields"]["NFTokens"]:
+                old_tokens.add(entry["NFToken"]["NFTokenID"])
             new_tokenID = new_tokens - old_tokens
             self.tokenID = new_tokenID.pop()
         return self.tokenID
