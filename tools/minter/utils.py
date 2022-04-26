@@ -40,9 +40,11 @@ def get_logger(name: str, log_file: str, verbose: bool = True):
     if verbose:
         log.setLevel(logging.DEBUG)
         handler.setLevel(logging.DEBUG)
+        file_handler.setLevel(logging.DEBUG)
     else:
         log.setLevel(logging.INFO)
         handler.setLevel(logging.INFO)
+        file_handler.setLevel(logging.DEBUG)
     formatter = logging.Formatter(
         "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
     )

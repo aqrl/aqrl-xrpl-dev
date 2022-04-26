@@ -58,9 +58,12 @@ class XRPLNFT:
                     self.minted = True
                 return self.mint_response.status
 
-    def show_mint_response(self) -> None:
+    def show_mint_result(self) -> None:
         print(f"Mint Outcome: {self.mint_response.status}\nResult Data:")
         print(json.dumps(self.mint_response.result, indent=4, sort_keys=True))
+
+    def get_mint_result(self) -> str:
+        return json.dumps(self.mint_response.result, indent=4, sort_keys=True)
 
     def get_token_id(self) -> str:
         if self.minted == False:
