@@ -110,13 +110,19 @@ async def get_mint_records(
     nft_uris: Dict[str, str],
     minted_record_file: Path,
     meta_json_dir: Path,
+    num_records: int,
     logger,
 ) -> None:
     collection = config["collection"]
     minted = {}
     try:
-        get_nfts = await account.get_nfts(limit=12000)
-        nft_list = get_nfts.result["account_nfts"]
+        nft_list = []
+        marker = None
+        while len(nft_list) < num_records:
+            get_nfts = await account.get_nfts(limit=num_records, marker=marker)
+            nft_list += get_nfts.result["account_nfts"]
+            marker = get_nfts.result["marker"]
+            logger.info(f"GET_NFTS => {len(nft_list)}")
         for nft in nft_list:
             taxon = nft["NFTokenTaxon"]
             tokenID = nft["NFTokenID"]
@@ -137,6 +143,7 @@ async def get_mint_records(
             metadata["tokenID"] = tokenID
             metadata["uri"] = nft_uris[image_json_name]
             minted[image_num] = metadata
+        logger.info(f"Number of nfts processed: {len(nft_list)}")
     except Exception as e:
         logger.error(f"EXCEPTION ENCOUNTERED: {e}")
     finally:
@@ -232,6 +239,7 @@ def mint_nfts(config_file, log_file, create_uris, get_mints, start, end, dry_run
                 nft_uris=uris,
                 minted_record_file=minted_records_file,
                 meta_json_dir=meta_json_dir,
+                num_records=(end-start+1),
                 logger=logger
             )
         )

@@ -57,10 +57,14 @@ class XRPLAccount:
     def __str__(self):
         return f"ACCOUNT: {self.address}"
 
-    async def get_nfts(self, limit: int = 100, debug: bool = False):
+    async def get_nfts(self, limit: int = 100, marker: str = None, debug: bool = False):
         async with AsyncWebsocketClient(self.network_url) as client:
             self.get_nfts_response = await client.request(
-                AccountNFTs(account=self.address, limit=limit)
+                AccountNFTs(
+                    account=self.address,
+                    limit=limit,
+                    marker=marker
+                )
             )
             if debug:
                 print(self.get_nfts_response.status)
