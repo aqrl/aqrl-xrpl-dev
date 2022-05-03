@@ -6,6 +6,8 @@ from xrpl.models.requests.account_info import AccountInfo
 from xrpl.models.response import Response
 from xrpl.models.response import ResponseStatus
 from xrpl.models.requests import AccountNFTs
+from xrpl.models.requests import AccountOffers
+from xrpl.models.requests import AccountTx
 from xrpl.asyncio.clients import AsyncWebsocketClient
 from xrpl.asyncio.transaction import get_transaction_from_hash
 from xrpl.wallet import Wallet
@@ -70,6 +72,34 @@ class XRPLAccount:
                 print(self.get_nfts_response.status)
                 print(json.dumps(self.get_nfts_response.result, indent=4, sort_keys=True))
             return self.get_nfts_response
+
+    async def get_offers(self, limit: int = 100, marker: str = None, debug: bool = False):
+        async with AsyncWebsocketClient(self.network_url) as client:
+            self.get_offers_response = await client.request(
+                AccountOffers(
+                    account=self.address,
+                    limit=limit,
+                    marker=marker
+                )
+            )
+            if debug:
+                print(self.get_offers_response.status)
+                print(json.dumps(self.get_offers_response.result, indent=4, sort_keys=True))
+            return self.get_offers_response
+
+    async def get_txs(self, limit: int = 100, marker: str = None, debug: bool = False):
+        async with AsyncWebsocketClient(self.network_url) as client:
+            self.get_txs_response = await client.request(
+                AccountTx(
+                    account=self.address,
+                    limit=limit,
+                    marker=marker
+                )
+            )
+            if debug:
+                print(self.get_txs_response.status)
+                print(json.dumps(self.get_txs_response.result, indent=4, sort_keys=True))
+            return self.get_txs_response
 
     def parse_get_nfts_response(self) -> None:
        response = self.get_nfts_response.result

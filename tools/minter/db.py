@@ -88,7 +88,7 @@ def upload_to_db(config_file, log_file, minted_nft_record_file, start, end, dry_
                      entry
                  ).decode('utf-8')
                  for entry in entries
-             )
+                )
         logger.info("PUSHING TO DB")
         cursor.execute(f"INSERT INTO {db_name} VALUES " + (args))
         conn.commit()
