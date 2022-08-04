@@ -65,7 +65,7 @@ class XRPLAccount:
                 AccountNFTs(
                     account=self.address,
                     limit=limit,
-                    marker=marker
+                    #marker=marker
                 )
             )
             if debug:

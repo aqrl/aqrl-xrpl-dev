@@ -117,11 +117,12 @@ async def get_mint_records(
     minted = {}
     try:
         nft_list = []
-        marker = None
+        #marker = None
         while len(nft_list) < num_records:
-            get_nfts = await account.get_nfts(limit=num_records, marker=marker)
+            #get_nfts = await account.get_nfts(limit=num_records, marker=marker)
+            get_nfts = await account.get_nfts(limit=num_records)
             nft_list += get_nfts.result["account_nfts"]
-            marker = get_nfts.result["marker"]
+            #marker = get_nfts.result["marker"]
             logger.info(f"GET_NFTS => {len(nft_list)}")
         for nft in nft_list:
             taxon = nft["NFTokenTaxon"]
@@ -209,7 +210,7 @@ def mint_nfts(config_file, log_file, create_uris, get_mints, start, end, dry_run
     network_url = get_network_url(mode="devnet")
     acc = XRPLAccount(xrpl_secret, network_url)
     uri_records_file = Path("uris.json")
-    minted_records_file = Path("minted.json")
+    minted_records_file = Path("minted-carscan.json")
     meta_json_dir = Path(config["json_dir"])
     if not start:
         start = config["start_idx"]

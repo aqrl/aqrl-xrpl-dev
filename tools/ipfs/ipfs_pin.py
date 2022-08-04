@@ -129,6 +129,12 @@ def process_image_and_json(
     help='Logfile to record runtime info'
 )
 @click.option(
+    '-f',
+    '--file_name',
+    type=Path,
+    help='Individual file to pin to IPFS'
+)
+@click.option(
     '-s',
     '--start',
     type=click.INT,
@@ -145,13 +151,22 @@ def process_image_and_json(
     '--dry_run',
     is_flag=True,
 )
-def pin_files(config_file, log_file, start, end, dry_run) -> None:
+def pin_files(config_file, log_file, file_name, start, end, dry_run) -> None:
     logger = get_logger(__name__, log_file)
     config = load_config(config_file)
     ipfs_repo = IPFSRepo(
                     api_key=config["pinata_api_key"],
                     api_secret=config["pinata_api_secret"],
                 )
+    if file_name.exists():
+        logger.info(f"PIN[{file_name}] => IPFS")
+        ipfs_file = pin_to_ipfs(config, ipfs_repo, file_name)
+        if ipfs_file:
+            logger.info(f"IPFS GATEWAY URL: {ipfs_file.pinurl}")
+            logger.info(f"IPFS URL: ipfs://{ipfs_file.pinhash}")
+        else:
+            logger.error("IPFS pin failed")
+        return None
     if not start:
         start = config["start_idx"]
     if not end:
